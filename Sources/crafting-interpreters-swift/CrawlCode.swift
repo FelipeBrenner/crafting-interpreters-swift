@@ -13,7 +13,7 @@ class CrawlCode {
     self.code = code;
   }
 
-  func crawl() async {
+  func crawl() async -> [Token] {
     while (!self.isEndOfExpression()) {
       self.startCharIndex = self.currentCharIndex;
       self.scanForTokens();
@@ -22,54 +22,55 @@ class CrawlCode {
     return self.tokens;
   }
 
-  func scanForTokens() {
-    let currentChar = self.nextCharacter();
+  func scanForTokens() -> Void {
+    self.nextCharacter();
+    let currentChar = String(self.code[self.code.index(self.code.startIndex, offsetBy: self.currentCharIndex)])
     switch currentChar {
       case TokenEnum.OPEN_PAREN.value:
-        self.addToken(TokenEnum.OPEN_PAREN);
+        self.addToken(tokenEnum: TokenEnum.OPEN_PAREN);
         break;
       case TokenEnum.CLOSE_PAREN.value:
-        self.addToken(TokenEnum.CLOSE_PAREN);
+        self.addToken(tokenEnum: TokenEnum.CLOSE_PAREN);
         break;
       case TokenEnum.MINUS.value:
-        self.addToken(TokenEnum.MINUS);
+        self.addToken(tokenEnum: TokenEnum.MINUS);
         break;
       case TokenEnum.PLUS.value:
-        self.addToken(TokenEnum.PLUS);
+        self.addToken(tokenEnum: TokenEnum.PLUS);
         break;
       case TokenEnum.MULTIPLY.value:
-        self.addToken(TokenEnum.MULTIPLY);
+        self.addToken(tokenEnum: TokenEnum.MULTIPLY);
         break;
       case TokenEnum.DIVIDE.value:
-        self.addToken(TokenEnum.DIVIDE);
+        self.addToken(tokenEnum: TokenEnum.DIVIDE);
         break;
       case TokenEnum.EXPONENT.value:
-        self.addToken(TokenEnum.EXPONENT);
+        self.addToken(tokenEnum: TokenEnum.EXPONENT);
         break;
       case TokenEnum.ASSIGN.value:
-        self.addToken(
-          self.matchNext(TokenEnum.EQUAL.expected)
+        self.addToken(tokenEnum: 
+          self.matchNext(expected: TokenEnum.EQUAL.expected)
             ? TokenEnum.EQUAL
             : TokenEnum.ASSIGN
         );
         break;
       case TokenEnum.NOT.value:
-        self.addToken(
-          self.matchNext(TokenEnum.NOT_EQUAL.expected)
+        self.addToken(tokenEnum: 
+          self.matchNext(expected: TokenEnum.NOT_EQUAL.expected)
             ? TokenEnum.NOT_EQUAL
             : TokenEnum.NOT
         );
         break;
       case TokenEnum.LESS_THAN.value:
-        self.addToken(
-          self.matchNext(TokenEnum.LESS_THAN_OR_EQUAL.expected)
+        self.addToken(tokenEnum: 
+          self.matchNext(expected: TokenEnum.LESS_THAN_OR_EQUAL.expected)
             ? TokenEnum.LESS_THAN_OR_EQUAL
             : TokenEnum.LESS_THAN
         );
         break;
       case TokenEnum.GREATER_THAN.value:
-        self.addToken(
-          self.matchNext(TokenEnum.GREATER_THAN_OR_EQUAL.expected)
+        self.addToken(tokenEnum: 
+          self.matchNext(expected: TokenEnum.GREATER_THAN_OR_EQUAL.expected)
             ? TokenEnum.GREATER_THAN_OR_EQUAL
             : TokenEnum.GREATER_THAN
         );
@@ -80,45 +81,43 @@ class CrawlCode {
       case " ", "\r", "\t":
         break;
       case "\n":
-        self.line++;
+        self.line+=1;
         break;
       default:
-        if (self.isDigit(currentChar)) {
+        if (self.isDigit(digit: currentChar)) {
           self.handleNumber();
-        } else if (self.isAlpha(currentChar)) {
+        } else if (self.isAlpha(alpha: currentChar)) {
           self.handleReservedWords();
         } else {
-          console.error(currentChar + " - Unknown token");
+          print(currentChar + " - Unknown token");
         }
         break;
     }
-
-    return self.tokens;
   }
 
-  func isDigit(digit: String) {
+  func isDigit(digit: String) -> Bool {
     return digit >= "0" && digit <= "9";
   }
 
-  func isAlpha(alpha: String) {
+  func isAlpha(alpha: String) -> Bool {
     return (
       (alpha >= "a" && alpha <= "z") ||
       (alpha >= "A" && alpha <= "Z") ||
-      alpha === "_"
+      alpha == "_"
     );
   }
 
-  func handleNumber() {
-    while (self.isDigit(self.getCharAtCurrent())) {
+  func handleNumber() -> Void {
+    while (self.isDigit(digit: self.getCharAtCurrent())) {
       self.nextCharacter();
     }
 
     if (
       self.getCharAtCurrent() == TokenEnum.FLOAT_DELIMITER.value &&
-      self.isDigit(self.matchNext("[0-9]"))
+      self.isDigit(digit: self.matchNext(expected: "[0-9]"))
     ) {
       self.nextCharacter();
-      while (self.isDigit(self.getCharAtCurrent())) {
+      while (self.isDigit(digit: self.getCharAtCurrent())) {
         self.nextCharacter();
       }
     }
@@ -128,70 +127,70 @@ class CrawlCode {
       self.currentCharIndex
     );
 
-    self.addToken(TokenEnum.NUMBER, parseFloat(value));
+    self.addToken(tokenEnum: TokenEnum.NUMBER, parseFloat(value));
   }
 
-  func handleString() {
+  func handleString() -> Void {
     while (
       self.getCharAtCurrent() != TokenEnum.STRING_DELIMITER.value &&
       !self.isEndOfExpression()
     ) {
       if (self.getCharAtCurrent() == TokenEnum.END_OF_LINE.value) {
-        self.line++;
+        self.line+=1;
       }
-      self.currentCharIndex++;
+      self.currentCharIndex+=1;
     }
 
     if (self.isEndOfExpression()) {
-      console.error("String not finished till end of code");
+      print("String not finished till end of code");
       return;
     }
 
-    self.currentCharIndex++;
+    self.currentCharIndex+=1;
 
     let value = self.code.substring(
       self.startCharIndex + 1,
       self.currentCharIndex - 1
     );
-    self.addToken(TokenEnum.STRING, value);
+    self.addToken(tokenEnum: TokenEnum.STRING, value);
   }
 
-  func handleReservedWords() {
-    while (self.isAlpha(self.getCharAtCurrent())) {
+  func handleReservedWords() -> Void {
+    while (self.isAlpha(alpha: self.getCharAtCurrent())) {
       self.nextCharacter();
     }
 
     let text = self.code.slice(self.startCharIndex, self.currentCharIndex);
-    let type = reservedWords.find((word) => word.value === text);
+    let type = reservedWords.find((word) => word.value == text);
     if (!type) {
       type = TokenEnum.VARIABLE;
     } 
-    self.addToken(type);
+    self.addToken(tokenEnum: type);
   }
 
-  func getCharAtCurrent() {
-    return self.code[self.currentCharIndex];
+  func getCharAtCurrent() -> String {
+    return String(self.code[self.currentCharIndex]);
   }
 
-  func matchRegex(expression: String) {
+  func matchRegex(expression: String) -> Bool {
     let regExp = new RegExp(expression);
-    return regExp.exec(self.getCharAtCurrent()) != null;
+    return regExp.exec(self.getCharAtCurrent()) != nil;
   }
 
-  func matchNext(expected: String) {
-    if (self.isEndOfExpression() || !self.matchRegex(expected)) {
+  func matchNext(expected: String) -> Bool {
+    if (self.isEndOfExpression() || !self.matchRegex(expression: expected)) {
       return false;
     }
 
-    self.currentCharIndex++;
+    self.currentCharIndex+=1;
     return true;
   }
 
-  func nextCharacter() {
-    return self.code.charAt(self.currentCharIndex++);
+  func nextCharacter() -> Void {
+    self.currentCharIndex+=1;
   }
 
-  func addToken(tokenEnum: String, value: String) {
+  func addToken(tokenEnum: TokenEnum, value: String = "") -> Void {
     let text = self.code.substring(
       self.startCharIndex,
       self.currentCharIndex
@@ -203,7 +202,7 @@ class CrawlCode {
     self.tokens[lineIndex].push(Token(type: tokenEnum, action: text, codeLine: self.line, value: value));
   }
 
-  func isEndOfExpression() {
+  func isEndOfExpression() -> Bool {
     return self.currentCharIndex >= self.code.count;
   }
 }
