@@ -56,3 +56,4 @@ class TokensEnum {
 }
 
 let TokenEnum = TokensEnum();
+typealias TokenEnumType = TokensEnum.TokenEnum

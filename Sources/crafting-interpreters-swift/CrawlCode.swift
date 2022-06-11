@@ -1,5 +1,5 @@
 class CrawlCode {
-  var tokens: [Token];
+  var tokens: [TokenType];
   var currentCharIndex: Int;
   var startCharIndex: Int;
   var line: Int;
@@ -13,7 +13,7 @@ class CrawlCode {
     self.code = code;
   }
 
-  func crawl() async -> [Token] {
+  func crawl() async -> [TokenType] {
     while (!self.isEndOfExpression()) {
       self.startCharIndex = self.currentCharIndex;
       self.scanForTokens();
@@ -122,12 +122,9 @@ class CrawlCode {
       }
     }
 
-    let value = self.code.substring(
-      self.startCharIndex,
-      self.currentCharIndex
-    );
+    let value = substring(self.code, self.startCharIndex, self.currentCharIndex);
 
-    self.addToken(tokenEnum: TokenEnum.NUMBER, parseFloat(value));
+    self.addToken(tokenEnum: TokenEnum.NUMBER, value: parseFloat(value));
   }
 
   func handleString() -> Void {
@@ -148,11 +145,8 @@ class CrawlCode {
 
     self.currentCharIndex+=1;
 
-    let value = self.code.substring(
-      self.startCharIndex + 1,
-      self.currentCharIndex - 1
-    );
-    self.addToken(tokenEnum: TokenEnum.STRING, value);
+    let value = substring(self.code, self.startCharIndex + 1, self.currentCharIndex - 1);
+    self.addToken(tokenEnum: TokenEnum.STRING, value: value);
   }
 
   func handleReservedWords() -> Void {
@@ -173,7 +167,7 @@ class CrawlCode {
   }
 
   func matchRegex(expression: String) -> Bool {
-    let regExp = new RegExp(expression);
+    let regExp = RegExp(expression);
     return regExp.exec(self.getCharAtCurrent()) != nil;
   }
 
@@ -190,11 +184,8 @@ class CrawlCode {
     self.currentCharIndex+=1;
   }
 
-  func addToken(tokenEnum: TokenEnum, value: String = "") -> Void {
-    let text = self.code.substring(
-      self.startCharIndex,
-      self.currentCharIndex
-    );
+  func addToken(tokenEnum: TokensEnum.TokenEnum, value: String = "") -> Void {
+    let text = substring(self.code, self.startCharIndex, self.currentCharIndex);
     let lineIndex = self.line - 1;
     if (!self.tokens[lineIndex]) {
       self.tokens[lineIndex] = [];
@@ -205,4 +196,12 @@ class CrawlCode {
   func isEndOfExpression() -> Bool {
     return self.currentCharIndex >= self.code.count;
   }
+}
+
+func substring(str: String, start: Int, final: Int) -> String {
+  let start = str.index(str.startIndex, offsetBy: start)
+  let end = str.index(str.endIndex, offsetBy: str.count-final)
+  let range = start..<end
+
+  return String(str[range])
 }
