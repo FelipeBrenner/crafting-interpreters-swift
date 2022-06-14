@@ -23,7 +23,7 @@ class CrawlTokens {
     while (self.matchPattern(types:[TokenEnumType.ASSIGN])) {
       let previousToken = self.previousToken();
       let right = self.logical();
-      expr = AssignType(left: expr, operator: previousToken.operator, right: right);
+      expr = AssignType(left: expr, action: previousToken.action, right: right);
     }
 
     return expr;
@@ -35,7 +35,7 @@ class CrawlTokens {
     while (self.matchPattern(types:[TokenEnumType.AND, TokenEnumType.OR, TokenEnumType.XOR])) {
       let previousToken = self.previousToken()
       let right = self.equality()
-      expr = BinaryType(left: expr, operator: previousToken.operator, right: right);
+      expr = BinaryType(left: expr, action: previousToken.action, right: right);
     }
 
     return expr;
@@ -47,7 +47,7 @@ class CrawlTokens {
     while (self.matchPattern(types:[TokenEnumType.NOT_EQUAL, TokenEnumType.EQUAL])) {
       let previousToken = self.previousToken();
       let right = self.comparation();
-      expr = BinaryType(left: expr, operator: previousToken.operator, right: right);
+      expr = BinaryType(left: expr, action: previousToken.action, right: right);
     }
     
     return expr;
@@ -66,7 +66,7 @@ class CrawlTokens {
     ) {
       let previousToken = self.previousToken();
       let right = self.additionSubtraction();
-      expr = BinaryType(left: expr, operator: previousToken.operator, right: right);
+      expr = BinaryType(left: expr, action: previousToken.action, right: right);
     }
 
     return expr;
@@ -78,7 +78,7 @@ class CrawlTokens {
     while (self.matchPattern(types:[TokenEnumType.PLUS, TokenEnumType.MINUS])) {
       let previousToken = self.previousToken();
       let right = self.multiplicationDivision();
-      expr = BinaryType(left: expr, operator: previousToken.operator, right: right);
+      expr = BinaryType(left: expr, action: previousToken.action, right: right);
     }
 
     return expr;
@@ -90,7 +90,7 @@ class CrawlTokens {
     while (self.matchPattern(types:[TokenEnumType.MULTIPLY, TokenEnumType.DIVIDE])) {
       let previousToken = self.previousToken();
       let right = self.potentiation();
-      expr = BinaryType(left: expr, operator: previousToken.operator, right: right);
+      expr = BinaryType(left: expr, action: previousToken.action, right: right);
     }
 
     return expr;
@@ -102,7 +102,7 @@ class CrawlTokens {
     while (self.matchPattern(types:[TokenEnumType.EXPONENT])) {
       let previousToken = self.previousToken();
       let right = self.unary();
-      expr = BinaryType(left: expr, operator: previousToken.operator, right: right);
+      expr = BinaryType(left: expr, action: previousToken.action, right: right);
     }
 
     return expr;
@@ -114,7 +114,7 @@ class CrawlTokens {
     if self.matchPattern(types:[TokenEnumType.NOT, TokenEnumType.MINUS]) {
       let previousToken = self.previousToken();
       let right = self.unary();
-      return UnaryType(operator: previousToken.operator, right: right);
+      return UnaryType(action: previousToken.action, right: right);
     }
 
     return self.literals();
@@ -145,12 +145,12 @@ class CrawlTokens {
         nextParam = self.expression();
       }
 
-      return MethodType(operator: previousToken.operator, params: params);
+      return MethodType(action: previousToken.action, params: params);
     }
 
     if self.matchPattern(types: [TokenEnumType.VARIABLE]) {
       let previousToken = self.previousToken();
-      return VariableType(operator: previousToken.operator);
+      return VariableType(action: previousToken.action);
     }
 
     if self.matchPattern(types: [TokenEnumType.OPEN_PAREN]) {
@@ -162,7 +162,7 @@ class CrawlTokens {
 
   // Auxiliary expressions
 
-  func consume(type: TokenEnumType, message: String) {
+  func consume(type: TokenEnumType, message: String) throws {
     if self.typeCheck(type) {
         return self.nextToken()
     }
@@ -171,7 +171,7 @@ class CrawlTokens {
   }
 
   // Checks if the current token is one of these types, and advance
-  func matchPattern(types: TokenEnumType...) -> Bool {
+  func matchPattern(types: TokenEnumType...)-> Bool {
     for type in types {
       if self.typeCheck(type) {
         self.nextToken();

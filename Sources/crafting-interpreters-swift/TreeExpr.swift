@@ -1,23 +1,23 @@
 class TreesExpr {
   class Binary: TreeExpr {
-    init(left: String, operator: String, right: String) {
+    init(left: String, action: String, right: String) {
       super.init();
       self.left = left;
-      self.operator = operator;
+      self.action = action;
       self.right = right;
     }
   };
 
-  class Assign: self.Binary {
-    init(left: String, operator: String, right: String) {
-      super(left, operator, right);
+  class Assign: Binary {
+    init(left: String, action: String, right: String) {
+      super.init(left, action, right);
     }
   };
 
   class Unary: TreeExpr {
-    init(operator: String, right: String) {
+    init(action: String, right: String) {
       super.init();
-      self.operator = operator;
+      self.action = action;
       self.right = right;
     }
   };
@@ -30,16 +30,16 @@ class TreesExpr {
   };
 
   class Method: TreeExpr {
-    init(operator: String, params: [Any]) {
+    init(action: String, params: [Any]) {
       super.init();
-      self.operator = operator;
+      self.action = action;
       self.params = params;
     }
   };
 
-  class Variable: self.Literal {
+  class Variable: Literal {
     init(value: String) {
-      super(value);
+      super.init(value);
     }
   };
 
@@ -52,15 +52,21 @@ class TreesExpr {
 
   class TreeExpr {
     func accept(visitor: TreePrinterType) {
-      if (self instanceof TreeExpr.Unary) return visitor.visitUnaryTreeExpr(expr: self);
-      if (self instanceof TreeExpr.Grouping)
+      if (self is UnaryType) {
+        return visitor.visitUnaryTreeExpr(expr: self);
+      }
+      if (self is GroupingType) {
         return visitor.visitGroupingTreeExpr(expr: self);
-      if (self instanceof TreeExpr.Literal)
+      }       
+      if (self is LiteralType) {
         return visitor.visitLiteralTreeExpr(expr: self);
-      if (self instanceof TreeExpr.Binary)
+      }
+      if (self is BinaryType) {
         return visitor.visitBinaryTreeExpr(expr: self);
-      if (self instanceof TreeExpr.Method)
+      }
+      if (self is MethodType) {
         return visitor.visitMethodTreeExpr(expr: self);
+      }
     }
   }
 }

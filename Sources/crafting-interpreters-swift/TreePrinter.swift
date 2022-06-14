@@ -8,7 +8,7 @@ class TreePrinter {
   }
 
   func visitBinaryTreeExpr(expr: BinaryType) {
-    return self.parenthesise(name: expr.operator, expr.left, expr.right);
+    return self.parenthesise(name: expr.action, expr.left, expr.right);
   }
 
   func visitGroupingTreeExpr(expr: GroupingType) {
@@ -26,11 +26,11 @@ class TreePrinter {
   }
 
   func visitUnaryTreeExpr(expr: UnaryType) {
-    return self.parenthesise(name: expr.operator, expr.right);
+    return self.parenthesise(name: expr.action, expr.right);
   }
 
   func visitMethodTreeExpr(expr: MethodType) {
-    return self.parenthesise(name: expr.operator, ...expr.params);
+    return self.parenthesise(name: expr.action, ...expr.params);
   }
 
   func parenthesise(name: String, exprs: TreeExprType...) {
