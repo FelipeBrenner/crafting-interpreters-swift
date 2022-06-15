@@ -1,7 +1,14 @@
 class TreesExpr {
   class Binary: TreeExpr {
-    init(left: String, action: String, right: String) {
+    var left: Any;
+    var action: String;
+    var right: Any;
+
+    override init() {
       super.init();
+    }
+
+    required init(left: Any, action: String, right: Any) {
       self.left = left;
       self.action = action;
       self.right = right;
@@ -9,49 +16,71 @@ class TreesExpr {
   };
 
   class Assign: Binary {
-    init(left: String, action: String, right: String) {
-      super.init(left, action, right);
+    required init(left: Any, action: String, right: Any) {
+      super.init(left: left, action: action, right: right);
     }
   };
 
   class Unary: TreeExpr {
-    init(action: String, right: String) {
+    var action: String;
+    var right: Any;
+
+    override init() {
       super.init();
+    }
+
+    required init(action: String, right: Any) {
       self.action = action;
       self.right = right;
     }
   };
 
   class Literal: TreeExpr {
-    init(value: Any) {
+    var value: Any;
+
+    override init() {
       super.init();
+    }
+
+    required init(value: Any) {
       self.value = value;
     }
   };
 
   class Method: TreeExpr {
-    init(action: String, params: [Any]) {
+    var action: String;
+    var params: [Any]
+
+    override init() {
       super.init();
+    }
+
+    required init(action: String, params: [Any]) {
       self.action = action;
       self.params = params;
     }
   };
 
   class Variable: Literal {
-    init(value: String) {
-      super.init(value);
+    required init(value: Any) {
+      super.init(value: value);
     }
   };
 
   class Grouping: TreeExpr {
-    init(expr: String) {
+    var expr: Any;
+
+    override init() {
       super.init();
+    }
+
+    required init(expr: Any) {
       self.expr = expr;
     }
   };
 
   class TreeExpr {
-    func accept(visitor: TreePrinterType) {
+    func accept(visitor: TreePrinterType) -> String {
       if (self is UnaryType) {
         return visitor.visitUnaryTreeExpr(expr: self);
       }

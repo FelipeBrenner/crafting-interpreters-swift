@@ -1,10 +1,10 @@
 class Token {
-  var type: TokensEnum.TokenEnum;
+  var type: TokenEnumType;
   var action: String;
   var codeLine: String;
-  var value: String;
+  var value: Any;
 
-  init(type: TokensEnum.TokenEnum, action: String, codeLine: String, value: String) {
+  init(type: TokenEnumType, action: String, codeLine: String, value: Any) {
     self.type = type
     self.action = action
     self.codeLine = codeLine

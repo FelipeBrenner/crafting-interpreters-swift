@@ -122,9 +122,9 @@ class CrawlCode {
       }
     }
 
-    let value = substring(self.code, self.startCharIndex, self.currentCharIndex);
+    let value = substring(str: self.code, start: self.startCharIndex, final: self.currentCharIndex);
 
-    self.addToken(tokenEnum: TokenEnum.NUMBER, value: parseFloat(value));
+    self.addToken(tokenEnum: TokenEnum.NUMBER, value: value);
   }
 
   func handleString() -> Void {
@@ -145,7 +145,7 @@ class CrawlCode {
 
     self.currentCharIndex+=1;
 
-    let value = substring(self.code, self.startCharIndex + 1, self.currentCharIndex - 1);
+    let value = substring(str: self.code, start: self.startCharIndex + 1, final: self.currentCharIndex - 1);
     self.addToken(tokenEnum: TokenEnum.STRING, value: value);
   }
 
@@ -154,12 +154,12 @@ class CrawlCode {
       self.nextCharacter();
     }
 
-    let text = self.code.slice(self.startCharIndex, self.currentCharIndex);
-    let type = reservedWords.find((word) => word.value == text);
-    if (!type) {
+    let text = substring(str: self.code, start: self.startCharIndex, final: self.currentCharIndex);
+    var type = reservedWords.first(where: {$0.value == text});
+    if (type == nil) {
       type = TokenEnum.VARIABLE;
     } 
-    self.addToken(tokenEnum: type);
+    self.addToken(tokenEnum: type!);
   }
 
   func getCharAtCurrent() -> String {
@@ -184,13 +184,10 @@ class CrawlCode {
     self.currentCharIndex+=1;
   }
 
-  func addToken(tokenEnum: TokensEnum.TokenEnum, value: String = "") -> Void {
-    let text = substring(self.code, self.startCharIndex, self.currentCharIndex);
+  func addToken(tokenEnum: TokenEnumType, value: Any = "") -> Void {
+    let text = substring(str: self.code, start: self.startCharIndex, final: self.currentCharIndex);
     let lineIndex = self.line - 1;
-    if (!self.tokens[lineIndex]) {
-      self.tokens[lineIndex] = [];
-    }
-    self.tokens[lineIndex].push(Token(type: tokenEnum, action: text, codeLine: self.line, value: value));
+    self.tokens[lineIndex].append(Token(type: tokenEnum, action: text, codeLine: self.code, value: value));
   }
 
   func isEndOfExpression() -> Bool {
@@ -203,5 +200,5 @@ func substring(str: String, start: Int, final: Int) -> String {
   let end = str.index(str.endIndex, offsetBy: str.count-final)
   let range = start..<end
 
-  return String(str[range])
+  return "\(str[range])"
 }
