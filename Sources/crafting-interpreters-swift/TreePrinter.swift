@@ -10,11 +10,11 @@ class TreePrinter {
   }
 
   func visitBinaryTreeExpr(expr: BinaryType) -> String {
-    return self.parenthesise(name: expr.action, BinaryType(left: expr.left, action: expr.action, right: expr.right));
+    return self.parenthesise(name: expr.action, exprs: [expr.left, expr.right]);
   }
 
   func visitGroupingTreeExpr(expr: GroupingType) -> String  {
-    return self.parenthesise(name: "group", GroupingType(expr: expr.expr));
+    return self.parenthesise(name: "group", exprs: [expr.expr]);
   }
 
   func visitLiteralTreeExpr(expr: LiteralType) -> String {
@@ -26,15 +26,15 @@ class TreePrinter {
   }
 
   func visitUnaryTreeExpr(expr: UnaryType) -> String {
-    return self.parenthesise(name: expr.action, UnaryType(action: expr.action, right: expr.right));
+    return self.parenthesise(name: expr.action, exprs: [expr.right]);
   }
 
   func visitMethodTreeExpr(expr: MethodType) -> String {
-    return self.parenthesise(name: expr.action, ...expr.params);
+    return self.parenthesise(name: expr.action, exprs: expr.params);
   }
 
-  func parenthesise(name: String, _ exprs: TreeExprType...) -> String {
-    let expressionData = exprs.map{ "\($0.accept(visitor: self)) " };
+  func parenthesise(name: String, exprs: [Any]) -> String {
+    let expressionData = exprs.map{ "\(($0 as! TreeExprType).accept(visitor: self)) " };
     return "(\(name) \(expressionData))";
   }
 }
