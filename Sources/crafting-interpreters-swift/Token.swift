@@ -12,4 +12,5 @@ class Token {
     print("agr foi")
   }
 }
+
 typealias TokenType = Token

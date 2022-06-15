@@ -1,26 +1,26 @@
 class CrawlTokens {
-  var tokens: [Token]
+  var tokens: [TokenType]
   var currentTokenIndex: Int
 
-  init(tokens: Token) {
+  init(tokens: [TokenType]) {
     self.tokens = tokens;
     self.currentTokenIndex = 0;
   }
 
-  func crawl() async {
+  func crawl() async -> TreeExprType {
     return self.expression();
   }
 
-  func expression() {
+  func expression() -> TreeExprType {
     return self.assign();
   }
 
   // Binary expressions
 
-  func assign() {
+  func assign() -> TreeExprType {
     var expr: TreeExprType = self.logical();
 
-    while (self.matchPattern(types:[TokenEnumType.ASSIGN])) {
+    while (self.matchPattern(types: [TokenEnum.ASSIGN])) {
       let previousToken = self.previousToken();
       let right = self.logical();
       expr = AssignType(left: expr, action: previousToken.action, right: right);
@@ -32,7 +32,7 @@ class CrawlTokens {
   func logical() -> TreeExprType {
     var expr: TreeExprType = self.equality();
 
-    while (self.matchPattern(types:[TokenEnumType.AND, TokenEnumType.OR, TokenEnumType.XOR])) {
+    while (self.matchPattern(types:[TokenEnum.AND, TokenEnum.OR, TokenEnum.XOR])) {
       let previousToken = self.previousToken()
       let right = self.equality()
       expr = BinaryType(left: expr, action: previousToken.action, right: right);
@@ -44,7 +44,7 @@ class CrawlTokens {
   func equality() -> TreeExprType {
     var expr: TreeExprType = self.comparation();
 
-    while (self.matchPattern(types:[TokenEnumType.NOT_EQUAL, TokenEnumType.EQUAL])) {
+    while (self.matchPattern(types:[TokenEnum.NOT_EQUAL, TokenEnum.EQUAL])) {
       let previousToken = self.previousToken();
       let right = self.comparation();
       expr = BinaryType(left: expr, action: previousToken.action, right: right);
@@ -58,10 +58,10 @@ class CrawlTokens {
 
     while (
       self.matchPattern(types:[
-        TokenEnumType.GREATER_THAN,
-        TokenEnumType.GREATER_THAN_OR_EQUAL,
-        TokenEnumType.LESS_THAN,
-        TokenEnumType.LESS_THAN_OR_EQUAL]
+        TokenEnum.GREATER_THAN,
+        TokenEnum.GREATER_THAN_OR_EQUAL,
+        TokenEnum.LESS_THAN,
+        TokenEnum.LESS_THAN_OR_EQUAL]
       )
     ) {
       let previousToken = self.previousToken();
@@ -75,7 +75,7 @@ class CrawlTokens {
   func additionSubtraction() -> TreeExprType {
     var expr: TreeExprType = self.multiplicationDivision();
 
-    while (self.matchPattern(types:[TokenEnumType.PLUS, TokenEnumType.MINUS])) {
+    while (self.matchPattern(types:[TokenEnum.PLUS, TokenEnum.MINUS])) {
       let previousToken = self.previousToken();
       let right = self.multiplicationDivision();
       expr = BinaryType(left: expr, action: previousToken.action, right: right);
@@ -87,7 +87,7 @@ class CrawlTokens {
   func multiplicationDivision() -> TreeExprType {
     var expr: TreeExprType = self.potentiation();
 
-    while (self.matchPattern(types:[TokenEnumType.MULTIPLY, TokenEnumType.DIVIDE])) {
+    while (self.matchPattern(types:[TokenEnum.MULTIPLY, TokenEnum.DIVIDE])) {
       let previousToken = self.previousToken();
       let right = self.potentiation();
       expr = BinaryType(left: expr, action: previousToken.action, right: right);
@@ -99,7 +99,7 @@ class CrawlTokens {
   func potentiation() -> TreeExprType {
     var expr: TreeExprType = self.unary();
 
-    while (self.matchPattern(types:[TokenEnumType.EXPONENT])) {
+    while (self.matchPattern(types:[TokenEnum.EXPONENT])) {
       let previousToken = self.previousToken();
       let right = self.unary();
       expr = BinaryType(left: expr, action: previousToken.action, right: right);
@@ -111,7 +111,7 @@ class CrawlTokens {
   // Unary expressions
 
   func unary() -> TreeExprType {
-    if self.matchPattern(types:[TokenEnumType.NOT, TokenEnumType.MINUS]) {
+    if self.matchPattern(types:[TokenEnum.NOT, TokenEnum.MINUS]) {
       let previousToken = self.previousToken();
       let right = self.unary();
       return UnaryType(action: previousToken.action, right: right);
@@ -123,13 +123,13 @@ class CrawlTokens {
   // Literals
 
   func literals() -> TreeExprType {
-    if self.matchPattern(types:[TokenEnumType.TRUE]) {
+    if self.matchPattern(types:[TokenEnum.TRUE]) {
         return LiteralType(value: true)
     }
-    if self.matchPattern(types:[TokenEnumType.FALSE]) {
+    if self.matchPattern(types:[TokenEnum.FALSE]) {
         return LiteralType(value: false)
     }
-    if self.matchPattern(types: [TokenEnumType.NUMBER, TokenEnumType.STRING]) {
+    if self.matchPattern(types: [TokenEnum.NUMBER, TokenEnum.STRING]) {
       let previousToken = self.previousToken();
       return LiteralType(value: previousToken.value);
     }
@@ -137,44 +137,42 @@ class CrawlTokens {
     if self.matchPattern(types: methodNames) {
       let previousToken = self.previousToken();
 
-      let nextParam = self.expression();
-      let params = [];
+      var nextParam = self.expression();
+      var params: [Any] = [];
 
       while (!!nextParam) {
-        params.push(nextParam);
+        params.append(nextParam);
         nextParam = self.expression();
       }
 
       return MethodType(action: previousToken.action, params: params);
     }
 
-    if self.matchPattern(types: [TokenEnumType.VARIABLE]) {
+    if self.matchPattern(types: [TokenEnum.VARIABLE]) {
       let previousToken = self.previousToken();
-      return VariableType(action: previousToken.action);
+      return VariableType(value: previousToken.action);
     }
 
-    if self.matchPattern(types: [TokenEnumType.OPEN_PAREN]) {
+    if self.matchPattern(types: [TokenEnum.OPEN_PAREN]) {
       let expr = self.expression();
-      self.consume(TokenEnumType.CLOSE_PAREN, "Expect ')' after expression.");
+      self.consume(type: TokenEnum.CLOSE_PAREN, message: "Expect ')' after expression.");
       return GroupingType(expr: expr);
     }
   }
 
   // Auxiliary expressions
 
-  func consume(type: TokenEnumType, message: String) throws {
-    if self.typeCheck(type) {
-        return self.nextToken()
+  func consume(type: TokenEnumType, message: String) {
+    if self.typeCheck(type: type) {
+      self.currentTokenIndex+=1
     }
-
-    throw new SyntaxError(message);
   }
 
   // Checks if the current token is one of these types, and advance
-  func matchPattern(types: TokenEnumType...)-> Bool {
+  func matchPattern(types: [TokenEnumType])-> Bool {
     for type in types {
-      if self.typeCheck(type) {
-        self.nextToken();
+      if self.typeCheck(type: type) {
+        self.currentTokenIndex+=1
         return true;
       }
     }
@@ -185,27 +183,20 @@ class CrawlTokens {
   // Checks if the current token is of this type
   func typeCheck(type: TokenEnumType) -> Bool {
     if self.isEndOfExpression() {
-        return false;
+      return false;
     }
-    return self.getCurrentToken()?.type === type;
-  }
-
-  func nextToken() -> TokenType {
-    if !self.isEndOfExpression() {
-        self.currentTokenIndex++;
-    }
-    return self.previousToken();
+    return self.getCurrentToken().type === type;
   }
 
   func previousToken() -> TokenType {
     return self.tokens[self.currentTokenIndex - 1];
   }
 
-  func isEndOfExpression() {
-    return self.getCurrentToken()?.type === TokenEnumType.END_OF_LINE;
+  func isEndOfExpression() -> Bool {
+    return self.getCurrentToken().type === TokenEnum.END_OF_LINE;
   }
 
-  func getCurrentToken() {
+  func getCurrentToken() -> TokenType {
     return self.tokens[self.currentTokenIndex];
   }
 }
