@@ -82,6 +82,7 @@ class CrawlCode {
       case " ", "\r", "\t":
         break;
       case "\n":
+        self.tokens.append([])
         self.line+=1;
         break;
       default:

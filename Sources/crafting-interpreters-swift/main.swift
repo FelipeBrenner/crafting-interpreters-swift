@@ -1,12 +1,11 @@
-// let fileList = fs.readdirSync("scripts");
+import Foundation
 
-// for (var index in fileList) {
-  // var startExecution = new Date();
-  // println(`running ${fileList[index]}`);
-  // var code = fs.readFileSync("scripts/" + fileList[index], {
-  //   encoding: "utf8",
-  // });
-  let code = "a = 2 * 2 + 2^3"
+let fileList = ["1-arithmetics.ehosguri", "2-relationals.ehosguri", "3-logicals.ehosguri", "4-methods.ehosguri"]
+
+for fileName in fileList {
+  let code = readFile(fileName: fileName)
+
+  print("\n\(fileName)")
 
   print("\nCode:");
   print(code);
@@ -48,4 +47,17 @@
   // );
 
   // println("------------------------------------");
-// }
+}
+
+func readFile(fileName: String) -> String {
+  let file = FileManager.default.currentDirectoryPath + "/scripts/" + fileName;
+  var lines: String
+
+  do {
+    lines = try String(contentsOfFile: file)
+  } catch {
+    return (error.localizedDescription)
+  }
+
+  return lines
+}
