@@ -140,7 +140,7 @@ class CrawlTokens {
       var nextParam = self.expression();
       var params: [Any] = [];
 
-      while (!!nextParam) {
+      while (nextParam != nil) {
         params.append(nextParam);
         nextParam = self.expression();
       }
