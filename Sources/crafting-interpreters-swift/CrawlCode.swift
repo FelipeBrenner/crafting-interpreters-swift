@@ -1,6 +1,6 @@
 import Foundation
 class CrawlCode {
-  var tokens: [TokenType];
+  var tokens: [[TokenType]];
   var currentCharIndex: Int;
   var startCharIndex: Int;
   var line: Int;
@@ -14,7 +14,7 @@ class CrawlCode {
     self.code = code;
   }
 
-  func crawl() async -> [TokenType] {
+  func crawl() async -> [[TokenType]] {
     while (!self.isEndOfExpression()) {
       self.startCharIndex = self.currentCharIndex;
       self.scanForTokens();
