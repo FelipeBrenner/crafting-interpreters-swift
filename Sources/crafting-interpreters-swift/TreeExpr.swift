@@ -9,6 +9,12 @@ class TreesExpr {
       self.action = action;
       self.right = right;
     }
+
+    override var description: String {
+      get {
+          return "Binary { left: \(left), action: \(action), right: \(right) }"
+      }
+    }
   };
 
   class Assign: Binary {
@@ -78,6 +84,12 @@ class TreesExpr {
       }
       
       return ""
+    }
+
+    var description: String {
+      get {
+          return ""
+      }
     }
   }
 }

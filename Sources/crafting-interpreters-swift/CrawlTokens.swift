@@ -195,6 +195,10 @@ class CrawlTokens {
   }
 
   func isEndOfExpression() -> Bool {
+    if(self.currentTokenIndex >= tokens.count) {
+      return true
+    }
+    
     return self.getCurrentToken().type === TokenEnum.END_OF_LINE;
   }
 

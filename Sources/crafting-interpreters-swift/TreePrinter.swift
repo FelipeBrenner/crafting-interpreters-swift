@@ -34,8 +34,11 @@ class TreePrinter {
   }
 
   func parenthesise(name: String, exprs: [Any]) -> String {
-    let expressionData = exprs.map{ "\(($0 as! TreeExprType).accept(visitor: self)) " };
-    return "(\(name) \(expressionData))";
+    var expressionData = ""
+    for expr in exprs {
+      expressionData = expressionData + (expr as! TreeExprType).accept(visitor: self) + " "
+    }
+    return "(\(name) \(expressionData.trimmingCharacters(in: .whitespacesAndNewlines)))";
   }
 }
 

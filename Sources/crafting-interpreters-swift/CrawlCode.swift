@@ -25,7 +25,7 @@ class CrawlCode {
 
   func scanForTokens() -> Void {
     let currentChar = String(self.code[self.code.index(self.code.startIndex, offsetBy: self.currentCharIndex)])
-    
+    self.nextCharacter();
     switch currentChar {
       case TokenEnum.OPEN_PAREN.value:
         self.addToken(tokenEnum: TokenEnum.OPEN_PAREN);
@@ -94,7 +94,7 @@ class CrawlCode {
         }
         break;
     }
-    self.nextCharacter();
+    
   }
 
   func isDigit(digit: String) -> Bool {

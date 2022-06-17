@@ -6,7 +6,7 @@
   // var code = fs.readFileSync("scripts/" + fileList[index], {
   //   encoding: "utf8",
   // });
-  let code = "2 + 2"
+  let code = "a = 2 * 2 + 2^3"
 
   print("\nCode:");
   print(code);
@@ -14,12 +14,12 @@
   let tokens = crawlCode.crawl();
   var trees: [TreeExprType] = [];
 
-  print("\nTokens:");
-  for line in tokens {
-    for token in line {
-      print(token.description);
-    }
-  }
+  // print("\nTokens:");
+  // for line in tokens {
+  //   for token in line {
+  //     print(token.description);
+  //   }
+  // }
 
   for token in tokens {
     let crawlTokens = CrawlTokens(tokens: token);
@@ -34,6 +34,7 @@
 
   print("\nAST Tree:");
   for tree in trees {
+    // print(tree.description)
     print(TreePrinter(expr: tree).print());
   }
   // println("\nEvaluation:");
