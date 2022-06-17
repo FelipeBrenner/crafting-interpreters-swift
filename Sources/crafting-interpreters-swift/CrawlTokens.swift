@@ -18,7 +18,7 @@ class CrawlTokens {
   // Binary expressions
 
   func assign() -> TreeExprType? {
-    var expr: TreeExprType = self.logical()!;
+    var expr: TreeExprType? = self.logical();
 
     while (self.matchPattern(types: [TokenEnum.ASSIGN])) {
       let previousToken = self.previousToken();
@@ -30,7 +30,7 @@ class CrawlTokens {
   }
 
   func logical() -> TreeExprType? {
-    var expr: TreeExprType = self.equality()!;
+    var expr: TreeExprType? = self.equality();
 
     while (self.matchPattern(types:[TokenEnum.AND, TokenEnum.OR, TokenEnum.XOR])) {
       let previousToken = self.previousToken()
@@ -42,7 +42,7 @@ class CrawlTokens {
   }
 
   func equality() -> TreeExprType? {
-    var expr: TreeExprType = self.comparation()!;
+    var expr: TreeExprType? = self.comparation();
 
     while (self.matchPattern(types:[TokenEnum.NOT_EQUAL, TokenEnum.EQUAL])) {
       let previousToken = self.previousToken();
@@ -54,7 +54,7 @@ class CrawlTokens {
   }
 
   func comparation() -> TreeExprType? {
-    var expr: TreeExprType = self.additionSubtraction()!;
+    var expr: TreeExprType? = self.additionSubtraction();
 
     while (
       self.matchPattern(types:[
@@ -73,7 +73,7 @@ class CrawlTokens {
   }
 
   func additionSubtraction() -> TreeExprType? {
-    var expr: TreeExprType = self.multiplicationDivision()!;
+    var expr: TreeExprType? = self.multiplicationDivision();
 
     while (self.matchPattern(types:[TokenEnum.PLUS, TokenEnum.MINUS])) {
       let previousToken = self.previousToken();
@@ -85,7 +85,7 @@ class CrawlTokens {
   }
 
   func multiplicationDivision() -> TreeExprType? {
-    var expr: TreeExprType = self.potentiation()!;
+    var expr: TreeExprType? = self.potentiation();
 
     while (self.matchPattern(types:[TokenEnum.MULTIPLY, TokenEnum.DIVIDE])) {
       let previousToken = self.previousToken();
@@ -97,7 +97,7 @@ class CrawlTokens {
   }
 
   func potentiation() -> TreeExprType? {
-    var expr: TreeExprType = self.unary()!;
+    var expr: TreeExprType? = self.unary();
 
     while (self.matchPattern(types:[TokenEnum.EXPONENT])) {
       let previousToken = self.previousToken();
@@ -117,12 +117,12 @@ class CrawlTokens {
       return UnaryType(action: previousToken.action, right: right!);
     }
 
-    return self.literals()!;
+    return self.literals();
   }
 
   // Literals
 
-  func literals() -> TreeExprType?? {
+  func literals() -> TreeExprType? {
     if self.matchPattern(types:[TokenEnum.TRUE]) {
         return LiteralType(value: true)
     }
