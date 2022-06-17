@@ -1,3 +1,4 @@
+import Foundation
 class CrawlCode {
   var tokens: [TokenType];
   var currentCharIndex: Int;
@@ -169,8 +170,8 @@ class CrawlCode {
   }
 
   func matchRegex(expression: String) -> Bool {
-    let regExp = RegExp(expression);
-    return regExp.exec(self.getCharAtCurrent()) != nil;
+    let range = self.getCharAtCurrent().range(of: expression, options: .regularExpression);
+    return range != nil;
   }
 
   func matchNext(expected: String) -> Bool {
