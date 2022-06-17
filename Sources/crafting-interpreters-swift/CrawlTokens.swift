@@ -18,43 +18,43 @@ class CrawlTokens {
   // Binary expressions
 
   func assign() -> TreeExprType? {
-    var expr: TreeExprType = self.logical();
+    var expr: TreeExprType = self.logical()!;
 
     while (self.matchPattern(types: [TokenEnum.ASSIGN])) {
       let previousToken = self.previousToken();
       let right = self.logical();
-      expr = AssignType(left: expr, action: previousToken.action, right: right);
+      expr = AssignType(left: expr, action: previousToken.action, right: right!);
     }
 
     return expr;
   }
 
   func logical() -> TreeExprType? {
-    var expr: TreeExprType = self.equality();
+    var expr: TreeExprType = self.equality()!;
 
     while (self.matchPattern(types:[TokenEnum.AND, TokenEnum.OR, TokenEnum.XOR])) {
       let previousToken = self.previousToken()
       let right = self.equality()
-      expr = BinaryType(left: expr, action: previousToken.action, right: right);
+      expr = BinaryType(left: expr, action: previousToken.action, right: right!);
     }
 
     return expr;
   }
 
   func equality() -> TreeExprType? {
-    var expr: TreeExprType = self.comparation();
+    var expr: TreeExprType = self.comparation()!;
 
     while (self.matchPattern(types:[TokenEnum.NOT_EQUAL, TokenEnum.EQUAL])) {
       let previousToken = self.previousToken();
       let right = self.comparation();
-      expr = BinaryType(left: expr, action: previousToken.action, right: right);
+      expr = BinaryType(left: expr, action: previousToken.action, right: right!);
     }
     
     return expr;
   }
 
   func comparation() -> TreeExprType? {
-    var expr: TreeExprType = self.additionSubtraction();
+    var expr: TreeExprType = self.additionSubtraction()!;
 
     while (
       self.matchPattern(types:[
@@ -66,43 +66,43 @@ class CrawlTokens {
     ) {
       let previousToken = self.previousToken();
       let right = self.additionSubtraction();
-      expr = BinaryType(left: expr, action: previousToken.action, right: right);
+      expr = BinaryType(left: expr, action: previousToken.action, right: right!);
     }
 
     return expr;
   }
 
   func additionSubtraction() -> TreeExprType? {
-    var expr: TreeExprType = self.multiplicationDivision();
+    var expr: TreeExprType = self.multiplicationDivision()!;
 
     while (self.matchPattern(types:[TokenEnum.PLUS, TokenEnum.MINUS])) {
       let previousToken = self.previousToken();
       let right = self.multiplicationDivision();
-      expr = BinaryType(left: expr, action: previousToken.action, right: right);
+      expr = BinaryType(left: expr, action: previousToken.action, right: right!);
     }
 
     return expr;
   }
 
   func multiplicationDivision() -> TreeExprType? {
-    var expr: TreeExprType = self.potentiation();
+    var expr: TreeExprType = self.potentiation()!;
 
     while (self.matchPattern(types:[TokenEnum.MULTIPLY, TokenEnum.DIVIDE])) {
       let previousToken = self.previousToken();
       let right = self.potentiation();
-      expr = BinaryType(left: expr, action: previousToken.action, right: right);
+      expr = BinaryType(left: expr, action: previousToken.action, right: right!);
     }
 
     return expr;
   }
 
   func potentiation() -> TreeExprType? {
-    var expr: TreeExprType = self.unary();
+    var expr: TreeExprType = self.unary()!;
 
     while (self.matchPattern(types:[TokenEnum.EXPONENT])) {
       let previousToken = self.previousToken();
       let right = self.unary();
-      expr = BinaryType(left: expr, action: previousToken.action, right: right);
+      expr = BinaryType(left: expr, action: previousToken.action, right: right!);
     }
 
     return expr;
@@ -114,7 +114,7 @@ class CrawlTokens {
     if self.matchPattern(types:[TokenEnum.NOT, TokenEnum.MINUS]) {
       let previousToken = self.previousToken();
       let right = self.unary();
-      return UnaryType(action: previousToken.action, right: right);
+      return UnaryType(action: previousToken.action, right: right!);
     }
 
     return self.literals();
@@ -141,7 +141,7 @@ class CrawlTokens {
       var params: [Any] = [];
 
       while (nextParam != nil) {
-        params.append(nextParam);
+        params.append(nextParam!);
         nextParam = self.expression();
       }
 
