@@ -117,7 +117,7 @@ class CrawlTokens {
       return UnaryType(action: previousToken.action, right: right!);
     }
 
-    return self.literals();
+    return self.literals()!;
   }
 
   // Literals
@@ -156,7 +156,7 @@ class CrawlTokens {
     if self.matchPattern(types: [TokenEnum.OPEN_PAREN]) {
       let expr = self.expression();
       self.consume(type: TokenEnum.CLOSE_PAREN, message: "Expect ')' after expression.");
-      return GroupingType(expr: expr);
+      return GroupingType(expr: expr!);
     }
 
     return nil;
