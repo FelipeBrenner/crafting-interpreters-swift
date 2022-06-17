@@ -52,6 +52,12 @@ class TokensEnum {
       self.expected = expected;
       self.final = value + expected;
     }
+
+    var description: String {
+      get {
+          return "TokenEnum {\n\t\tvalue: \(value)\n\t\texpected: \(expected)\n\t\tfinal: \(final)\n\t}"
+      }
+    }
   }
 }
 

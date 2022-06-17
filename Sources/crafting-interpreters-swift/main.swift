@@ -15,7 +15,11 @@
   var trees: [TreeExprType] = [];
 
   print("\nTokens:");
-  print(tokens);
+  for line in tokens {
+    for token in line {
+      print(token.description);
+    }
+  }
 
   for token in tokens {
     let crawlTokens = CrawlTokens(tokens: token);

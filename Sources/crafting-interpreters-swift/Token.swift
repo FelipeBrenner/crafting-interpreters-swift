@@ -10,6 +10,12 @@ class Token {
     self.codeLine = codeLine
     self.value = value
   }
+
+  var description: String {
+    get {
+        return "Token {\n\ttype: \(type.description)\n\taction: \(action)\n\tcodeLine: \(codeLine)\n\tvalue: \(value)\n}"
+    }
+  }
 }
 
 typealias TokenType = Token

@@ -7,7 +7,7 @@ class CrawlCode {
   var code: String;
 
   init(code: String) {
-    self.tokens = [];
+    self.tokens = [[]];
     self.currentCharIndex = 0;
     self.startCharIndex = 0;
     self.line = 1;
@@ -24,8 +24,8 @@ class CrawlCode {
   }
 
   func scanForTokens() -> Void {
-    self.nextCharacter();
     let currentChar = String(self.code[self.code.index(self.code.startIndex, offsetBy: self.currentCharIndex)])
+    
     switch currentChar {
       case TokenEnum.OPEN_PAREN.value:
         self.addToken(tokenEnum: TokenEnum.OPEN_PAREN);
@@ -94,6 +94,7 @@ class CrawlCode {
         }
         break;
     }
+    self.nextCharacter();
   }
 
   func isDigit(digit: String) -> Bool {
@@ -165,7 +166,11 @@ class CrawlCode {
   }
 
   func getCharAtCurrent() -> String {
-    let index = self.code.index(self.code.startIndex, offsetBy: self.currentCharIndex) 
+    if(self.isEndOfExpression()) {
+      return ""
+    }
+    
+    let index = self.code.index(self.code.startIndex, offsetBy: self.currentCharIndex)
     return String(self.code[index]);
   }
 
