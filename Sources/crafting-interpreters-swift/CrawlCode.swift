@@ -113,8 +113,9 @@ class CrawlCode {
     }
 
     if (
-      self.getCharAtCurrent() == TokenEnum.FLOAT_DELIMITER.value &&
-      self.isDigit(digit: self.matchNext(expected: "[0-9]"))
+      self.getCharAtCurrent() == TokenEnum.FLOAT_DELIMITER.value && 
+      self.matchNext(expected: "[0-9]") && 
+      self.isDigit(digit: self.getCharAtCurrent())
     ) {
       self.nextCharacter();
       while (self.isDigit(digit: self.getCharAtCurrent())) {
