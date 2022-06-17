@@ -164,7 +164,8 @@ class CrawlCode {
   }
 
   func getCharAtCurrent() -> String {
-    return String(self.code[self.currentCharIndex]);
+    let index = self.code.index(self.code.startIndex, offsetBy: self.currentCharIndex) 
+    return String(self.code[index]);
   }
 
   func matchRegex(expression: String) -> Bool {
