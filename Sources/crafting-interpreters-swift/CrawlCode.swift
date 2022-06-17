@@ -114,20 +114,15 @@ class CrawlCode {
     while (self.isDigit(digit: self.getCharAtCurrent())) {
       self.nextCharacter();
     }
-
-    if (
-      self.getCharAtCurrent() == TokenEnum.FLOAT_DELIMITER.value && 
-      self.matchNext(expected: "[0-9]") && 
-      self.isDigit(digit: self.getCharAtCurrent())
-    ) {
+    
+    if (self.getCharAtCurrent() == TokenEnum.FLOAT_DELIMITER.value) {
       self.nextCharacter();
       while (self.isDigit(digit: self.getCharAtCurrent())) {
         self.nextCharacter();
       }
     }
 
-    let value = substring(str: self.code, start: self.startCharIndex, final: self.currentCharIndex);
-
+    let value = Double(substring(str: self.code, start: self.startCharIndex, final: self.currentCharIndex))!;
     self.addToken(tokenEnum: TokenEnum.NUMBER, value: value);
   }
 
