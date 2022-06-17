@@ -14,7 +14,7 @@ class CrawlCode {
     self.code = code;
   }
 
-  func crawl() async -> [[TokenType]] {
+  func crawl() -> [[TokenType]] {
     while (!self.isEndOfExpression()) {
       self.startCharIndex = self.currentCharIndex;
       self.scanForTokens();
@@ -200,8 +200,7 @@ class CrawlCode {
 
 func substring(str: String, start: Int, final: Int) -> String {
   let start = str.index(str.startIndex, offsetBy: start)
-  let end = str.index(str.endIndex, offsetBy: str.count-final)
+  let end = str.index(str.endIndex, offsetBy: -(str.count-final))
   let range = start..<end
-
   return "\(str[range])"
 }

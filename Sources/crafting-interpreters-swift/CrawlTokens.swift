@@ -7,7 +7,7 @@ class CrawlTokens {
     self.currentTokenIndex = 0;
   }
 
-  func crawl() async -> TreeExprType? {
+  func crawl() -> TreeExprType? {
     return self.expression();
   }
 

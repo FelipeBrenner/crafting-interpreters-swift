@@ -5,7 +5,7 @@ class TreePrinter {
     self.expr = expr;
   }
 
-  func print()  -> String {
+  func print() -> String {
     return self.expr.accept(visitor: self);
   }
 

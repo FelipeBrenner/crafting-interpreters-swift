@@ -9,7 +9,6 @@ class Token {
     self.action = action
     self.codeLine = codeLine
     self.value = value
-    print("agr foi")
   }
 }
 

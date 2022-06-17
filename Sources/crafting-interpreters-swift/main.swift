@@ -1,5 +1,46 @@
-var token = Token(type: TokenEnumType(value: ""), action: "", codeLine: "", value: "")
+// let fileList = fs.readdirSync("scripts");
 
-for tok in reservedWords {
-  print(tok.final)
-}
+// for (var index in fileList) {
+  // var startExecution = new Date();
+  // println(`running ${fileList[index]}`);
+  // var code = fs.readFileSync("scripts/" + fileList[index], {
+  //   encoding: "utf8",
+  // });
+  let code = "2 + 2"
+
+  print("\nCode:");
+  print(code);
+  let crawlCode = CrawlCode(code: code);
+  let tokens = crawlCode.crawl();
+  var trees: [TreeExprType] = [];
+
+  print("\nTokens:");
+  print(tokens);
+
+  for token in tokens {
+    let crawlTokens = CrawlTokens(tokens: token);
+    let tree = crawlTokens.crawl();
+    if(tree != nil) {
+      trees.append(tree!);
+    }
+  }
+
+  // println(chalk.bgCyan.black("\nTree Object:"));
+  // println(trees);
+
+  print("\nAST Tree:");
+  for tree in trees {
+    print(TreePrinter(expr: tree).print());
+  }
+  // println("\nEvaluation:");
+  // var evaluator = new EvaluateTree(trees);
+  // evaluator.init();
+  // var endExecution = new Date();
+  // println(
+  //     `\nend of execution ${fileList[index]} in ${
+  //       endExecution.getTime() - startExecution.getTime()
+  //     }ms`
+  // );
+
+  // println("------------------------------------");
+// }
