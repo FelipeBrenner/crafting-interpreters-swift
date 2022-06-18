@@ -38,6 +38,10 @@ class TokensEnum {
   let AVG = TokenEnum(value: "mediazinhacpx");
   let SUM = TokenEnum(value: "somaaaa");
 
+  // Ternary conditional
+  let TERNARY_OPERATOR = TokenEnum(value: "?")
+  let TERNARY_SEPARATOR = TokenEnum(value: ":")
+
   let VARIABLE = TokenEnum(value: "VARIABLE");
 
   let END_OF_LINE = TokenEnum(value: "\n");

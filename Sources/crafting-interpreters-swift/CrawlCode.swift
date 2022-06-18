@@ -27,6 +27,12 @@ class CrawlCode {
     let currentChar = String(self.code[self.code.index(self.code.startIndex, offsetBy: self.currentCharIndex)])
     self.nextCharacter();
     switch currentChar {
+      case TokenEnum.TERNARY_OPERATOR.value:
+        self.addToken(tokenEnum: TokenEnum.TERNARY_OPERATOR);
+        break;
+      case TokenEnum.TERNARY_SEPARATOR.value:
+        self.addToken(tokenEnum: TokenEnum.TERNARY_SEPARATOR);
+        break;
       case TokenEnum.OPEN_PAREN.value:
         self.addToken(tokenEnum: TokenEnum.OPEN_PAREN);
         break;

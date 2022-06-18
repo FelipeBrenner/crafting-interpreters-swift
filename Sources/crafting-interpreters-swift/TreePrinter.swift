@@ -33,6 +33,10 @@ class TreePrinter {
     return self.parenthesise(name: expr.action, exprs: expr.params);
   }
 
+  func visitTernaryConditionalTreeExpr(expr: TernaryConditionalType) -> String {
+    return self.parenthesise(name: "ternary conditional", exprs: [expr.condition, expr.exprIfTrue, expr.exprIfFalse])
+  }
+
   func parenthesise(name: String, exprs: [Any]) -> String {
     var expressionData = ""
     for expr in exprs {

@@ -1,6 +1,6 @@
 import Foundation
 
-let fileList = ["1-arithmetics.ehosguri", "2-relationals.ehosguri", "3-logicals.ehosguri", "4-methods.ehosguri"]
+let fileList = ["1-arithmetics.ehosguri", "2-relationals.ehosguri", "3-logicals.ehosguri", "4-methods.ehosguri", "5-ternary-conditional.ehosguri"]
 
 for fileName in fileList {
   let code = readFile(fileName: fileName)
@@ -13,13 +13,6 @@ for fileName in fileList {
   let tokens = crawlCode.crawl();
   var trees: [TreeExprType] = [];
 
-  // print("\nTokens:");
-  // for line in tokens {
-  //   for token in line {
-  //     print(token.description);
-  //   }
-  // }
-
   for token in tokens {
     let crawlTokens = CrawlTokens(tokens: token);
     let tree = crawlTokens.crawl();
@@ -28,12 +21,8 @@ for fileName in fileList {
     }
   }
 
-  // println(chalk.bgCyan.black("\nTree Object:"));
-  // println(trees);
-
   print("\nAST Tree:");
   for tree in trees {
-    // print(tree.description)
     print(TreePrinter(expr: tree).print());
   }
   // println("\nEvaluation:");

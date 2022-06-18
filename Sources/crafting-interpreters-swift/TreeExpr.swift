@@ -65,6 +65,18 @@ class TreesExpr {
     }
   };
 
+  class TernaryConditional: TreeExpr {
+    var condition: Any;
+    var exprIfTrue: Any;
+    var exprIfFalse: Any;
+
+    required init(condition: Any, exprIfTrue: Any, exprIfFalse: Any) {
+      self.condition = condition;
+      self.exprIfTrue = exprIfTrue;
+      self.exprIfFalse = exprIfFalse;
+    }
+  }
+
   class TreeExpr {
     func accept(visitor: TreePrinterType) -> String {
       if (self is UnaryType) {
@@ -81,6 +93,9 @@ class TreesExpr {
       }
       if (self is MethodType) {
         return visitor.visitMethodTreeExpr(expr: self as! MethodType);
+      }
+       if (self is TernaryConditional) {
+        return visitor.visitTernaryConditionalTreeExpr(expr: self as! TernaryConditional);
       }
       
       return ""
@@ -103,3 +118,4 @@ typealias LiteralType = TreesExpr.Literal
 typealias MethodType = TreesExpr.Method
 typealias VariableType = TreesExpr.Variable
 typealias GroupingType = TreesExpr.Grouping
+typealias TernaryConditionalType = TreesExpr.TernaryConditional

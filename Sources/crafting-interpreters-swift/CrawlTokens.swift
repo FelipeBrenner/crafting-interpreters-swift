@@ -18,12 +18,26 @@ class CrawlTokens {
   // Binary expressions
 
   func assign() -> TreeExprType? {
-    var expr: TreeExprType? = self.logical();
+    var expr: TreeExprType? = self.ternaryConditional();
 
     while (self.matchPattern(types: [TokenEnum.ASSIGN])) {
       let previousToken = self.previousToken();
-      let right = self.logical();
-      expr = AssignType(left: expr, action: previousToken.action, right: right!);
+      let right = self.ternaryConditional();
+      expr = AssignType(left: expr!, action: previousToken.action, right: right!);
+    }
+
+    return expr;
+  }
+
+  func ternaryConditional() -> TreeExprType? {
+    var expr: TreeExprType? = self.logical();
+
+    while (self.matchPattern(types: [TokenEnum.TERNARY_OPERATOR])) {
+      let condition = expr;
+      let exprIfTrue = self.logical();
+      self.consume(type: TokenEnum.TERNARY_SEPARATOR, message: "Expect ':' after '?'.");
+      let exprIfFalse = self.logical();
+      expr = TernaryConditionalType(condition: condition!, exprIfTrue: exprIfTrue!, exprIfFalse: exprIfFalse!);
     }
 
     return expr;
@@ -35,7 +49,7 @@ class CrawlTokens {
     while (self.matchPattern(types:[TokenEnum.AND, TokenEnum.OR, TokenEnum.XOR])) {
       let previousToken = self.previousToken()
       let right = self.equality()
-      expr = BinaryType(left: expr, action: previousToken.action, right: right!);
+      expr = BinaryType(left: expr!, action: previousToken.action, right: right!);
     }
 
     return expr;
@@ -47,7 +61,7 @@ class CrawlTokens {
     while (self.matchPattern(types:[TokenEnum.NOT_EQUAL, TokenEnum.EQUAL])) {
       let previousToken = self.previousToken();
       let right = self.comparation();
-      expr = BinaryType(left: expr, action: previousToken.action, right: right!);
+      expr = BinaryType(left: expr!, action: previousToken.action, right: right!);
     }
     
     return expr;
@@ -66,7 +80,7 @@ class CrawlTokens {
     ) {
       let previousToken = self.previousToken();
       let right = self.additionSubtraction();
-      expr = BinaryType(left: expr, action: previousToken.action, right: right!);
+      expr = BinaryType(left: expr!, action: previousToken.action, right: right!);
     }
 
     return expr;
@@ -78,7 +92,7 @@ class CrawlTokens {
     while (self.matchPattern(types:[TokenEnum.PLUS, TokenEnum.MINUS])) {
       let previousToken = self.previousToken();
       let right = self.multiplicationDivision();
-      expr = BinaryType(left: expr, action: previousToken.action, right: right!);
+      expr = BinaryType(left: expr!, action: previousToken.action, right: right!);
     }
 
     return expr;
@@ -90,7 +104,7 @@ class CrawlTokens {
     while (self.matchPattern(types:[TokenEnum.MULTIPLY, TokenEnum.DIVIDE])) {
       let previousToken = self.previousToken();
       let right = self.potentiation();
-      expr = BinaryType(left: expr, action: previousToken.action, right: right!);
+      expr = BinaryType(left: expr!, action: previousToken.action, right: right!);
     }
 
     return expr;
@@ -102,7 +116,7 @@ class CrawlTokens {
     while (self.matchPattern(types:[TokenEnum.EXPONENT])) {
       let previousToken = self.previousToken();
       let right = self.unary();
-      expr = BinaryType(left: expr, action: previousToken.action, right: right!);
+      expr = BinaryType(left: expr!, action: previousToken.action, right: right!);
     }
 
     return expr;
