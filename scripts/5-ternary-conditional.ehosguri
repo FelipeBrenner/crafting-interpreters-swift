@@ -1,1 +1,3 @@
-chora 3 > 2 ? 3 : 2
+a = 3
+b = 2
+chora 3 > 2 ? a*b : a/b
