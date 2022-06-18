@@ -27,7 +27,7 @@ for fileName in fileList {
   }
   // println("\nEvaluation:");
   // var evaluator = new EvaluateTree(trees);
-  // evaluator.init();
+  // evaluator.start();
   // var endExecution = new Date();
   // println(
   //     `\nend of execution ${fileList[index]} in ${
