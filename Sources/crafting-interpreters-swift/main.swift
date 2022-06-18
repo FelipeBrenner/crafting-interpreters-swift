@@ -25,17 +25,10 @@ for fileName in fileList {
   for tree in trees {
     print(TreePrinter(expr: tree).print());
   }
-  // println("\nEvaluation:");
-  // var evaluator = new EvaluateTree(trees);
-  // evaluator.start();
-  // var endExecution = new Date();
-  // println(
-  //     `\nend of execution ${fileList[index]} in ${
-  //       endExecution.getTime() - startExecution.getTime()
-  //     }ms`
-  // );
 
-  // println("------------------------------------");
+  print("\nEvaluation:");
+  let evaluator = EvaluateTree(trees: trees);
+  evaluator.start();
 }
 
 func readFile(fileName: String) -> String {

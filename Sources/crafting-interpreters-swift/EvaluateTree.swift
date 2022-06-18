@@ -9,36 +9,33 @@ class EvaluateTree {
     self.trees = trees;
   }
 
-  func start() -> Any? {
-    var lastLine: Any?;
+  func start() {
     for tree in self.trees {
-      lastLine = self.evaluate(operation: tree);
+      _ = self.evaluate(operation: tree);
     }
-    return lastLine;
   }
 
   func evaluate(operation: TreeExprType) -> Any? {
     switch true {
       case operation is MethodType:
-        return self.methodEvaluation(operation: operation as! MethodType) as! TreeExprType?
+        return self.methodEvaluation(operation: operation as! MethodType)
       case operation is VariableType:
         let operation = operation as! VariableType
-        if self.state[operation.value as! String] != nil {
+        if self.state[operation.value as! String] == nil {
           print("Variable does not exist on this scope.");
           return nil
         }
-        return self.state[operation.value as! String]! as! TreeExprType?;
+        return self.state[operation.value as! String]!;
       case operation is LiteralType:
-        let op = operation as! LiteralType
-        return op.value as! TreeExprType?;
+        return (operation as! LiteralType).value;
       case operation is UnaryType:
-        return self.unaryEvaluation(operation: operation as! UnaryType) as! TreeExprType?;
+        return self.unaryEvaluation(operation: operation as! UnaryType);
       case operation is AssignType:
-        return self.assignEvaluation(operation: operation as! AssignType) as! TreeExprType?;
+        return self.assignEvaluation(operation: operation as! AssignType);
       case operation is BinaryType:
-        return self.binaryEvaluation(operation: operation as! BinaryType) as! TreeExprType?;
+        return self.binaryEvaluation(operation: operation as! BinaryType);
       case operation is GroupingType:
-        return self.groupingEvaluation(operation: operation as! GroupingType) as! TreeExprType?;
+        return self.groupingEvaluation(operation: operation as! GroupingType);
       default:
         return nil;
     }
@@ -46,7 +43,7 @@ class EvaluateTree {
 
   func methodEvaluation(operation: MethodType) -> Any? {
     let params = operation.params.map { self.evaluate(operation: $0 as! TreeExprType) };
-    return methodMapping(method: operation.action, params: params)!;
+    return methodMapping(method: operation.action, params: params);
   }
 
   func assignEvaluation(operation: AssignType) {
@@ -61,20 +58,20 @@ class EvaluateTree {
   func binaryEvaluation(operation: BinaryType) -> Any? {
     let leftHandValue = self.evaluate(operation: operation.left as! TreeExprType);
     let rightHandValue = self.evaluate(operation: operation.right as! TreeExprType);
-
+    
     switch operation.action {
       case TokenEnum.LESS_THAN.final:
-        return (leftHandValue as! String) < (rightHandValue as! String);
+        return (leftHandValue as! Double) < (rightHandValue as! Double);
       case TokenEnum.GREATER_THAN.final:
-        return (leftHandValue as! String) > (rightHandValue as! String);
+        return (leftHandValue as! Double) > (rightHandValue as! Double);
       case TokenEnum.EQUAL.final:
-        return (leftHandValue as! String) == (rightHandValue as! String);
+        return (leftHandValue as! Double) == (rightHandValue as! Double);
       case TokenEnum.NOT_EQUAL.final:
-        return (leftHandValue as! String) != (rightHandValue as! String);
+        return (leftHandValue as! Double) != (rightHandValue as! Double);
       case TokenEnum.GREATER_THAN_OR_EQUAL.final:
-        return (leftHandValue as! String) >= (rightHandValue as! String);
+        return (leftHandValue as! Double) >= (rightHandValue as! Double);
       case TokenEnum.LESS_THAN_OR_EQUAL.final:
-        return (leftHandValue as! String) <= (rightHandValue as! String);
+        return (leftHandValue as! Double) <= (rightHandValue as! Double);
       case TokenEnum.EXPONENT.final:
         return pow((leftHandValue as! Double), (rightHandValue as! Double));
       case TokenEnum.MULTIPLY.final:
