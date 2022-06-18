@@ -9,15 +9,15 @@ class EvaluateTree {
     self.trees = trees;
   }
 
-  func start() -> TreesExpr.TreeExpr? {
-    var lastLine: TreesExpr.TreeExpr?;
+  func start() -> Any? {
+    var lastLine: Any?;
     for tree in self.trees {
       lastLine = self.evaluate(operation: tree);
     }
     return lastLine;
   }
 
-  func evaluate(operation: TreeExprType) -> TreeExprType? {
+  func evaluate(operation: TreeExprType) -> Any? {
     switch true {
       case operation is MethodType:
         return self.methodEvaluation(operation: operation as! MethodType) as! TreeExprType?
@@ -45,62 +45,64 @@ class EvaluateTree {
   }
 
   func methodEvaluation(operation: MethodType) -> Any? {
-    let params = operation.params.map { self.evaluate(operation: $0) };
+    let params = operation.params.map { self.evaluate(operation: $0 as! TreeExprType) };
     return methodMapping(method: operation.action, params: params)!;
   }
 
   func assignEvaluation(operation: AssignType) {
-    let rightHandValue = self.evaluate(operation: operation.right);
-    self.state[operation.left.value] = rightHandValue;
+    let rightHandValue = self.evaluate(operation: operation.right as! TreeExprType);
+    self.state[(operation.left as! VariableType).value as! String] = rightHandValue;
   }
 
-  func groupingEvaluation(operation: GroupingType) -> Any {
-    return self.evaluate(operation: operation.expr);
+  func groupingEvaluation(operation: GroupingType) -> Any? {
+    return self.evaluate(operation: operation.expr as! TreeExprType);
   }
 
-  func binaryEvaluation(operation: BinaryType) -> Any {
-    let leftHandValue = self.evaluate(operation: operation.left);
-    let rightHandValue = self.evaluate(operation: operation.right);
+  func binaryEvaluation(operation: BinaryType) -> Any? {
+    let leftHandValue = self.evaluate(operation: operation.left as! TreeExprType);
+    let rightHandValue = self.evaluate(operation: operation.right as! TreeExprType);
 
-    switch operation.operator {
+    switch operation.action {
       case TokenEnum.LESS_THAN.final:
-        return leftHandValue < rightHandValue;
+        return (leftHandValue as! String) < (rightHandValue as! String);
       case TokenEnum.GREATER_THAN.final:
-        return leftHandValue > rightHandValue;
+        return (leftHandValue as! String) > (rightHandValue as! String);
       case TokenEnum.EQUAL.final:
-        return leftHandValue == rightHandValue;
+        return (leftHandValue as! String) == (rightHandValue as! String);
       case TokenEnum.NOT_EQUAL.final:
-        return leftHandValue != rightHandValue;
+        return (leftHandValue as! String) != (rightHandValue as! String);
       case TokenEnum.GREATER_THAN_OR_EQUAL.final:
-        return leftHandValue >= rightHandValue;
+        return (leftHandValue as! String) >= (rightHandValue as! String);
       case TokenEnum.LESS_THAN_OR_EQUAL.final:
-        return leftHandValue <= rightHandValue;
+        return (leftHandValue as! String) <= (rightHandValue as! String);
       case TokenEnum.EXPONENT.final:
-        return Math.pow(leftHandValue, rightHandValue);
+        return pow((leftHandValue as! Double), (rightHandValue as! Double));
       case TokenEnum.MULTIPLY.final:
-        return leftHandValue * rightHandValue;
+        return (leftHandValue as! Double) * (rightHandValue as! Double);
       case TokenEnum.DIVIDE.final:
-        return leftHandValue / rightHandValue;
+        return (leftHandValue as! Double) / (rightHandValue as! Double);
       case TokenEnum.PLUS.final:
-        return leftHandValue + rightHandValue;
+        return (leftHandValue as! Double) + (rightHandValue as! Double);
       case TokenEnum.MINUS.final:
-        return leftHandValue - rightHandValue;
+        return (leftHandValue as! Double) - (rightHandValue as! Double);
       case TokenEnum.AND.final:
-        return leftHandValue && rightHandValue;
+        return (leftHandValue as! Bool) && (rightHandValue as! Bool);
       case TokenEnum.OR.final:
-        return leftHandValue || rightHandValue;
+        return (leftHandValue as! Bool)  || (rightHandValue as! Bool);
       case TokenEnum.XOR.final:
-        return (leftHandValue ^ rightHandValue) == 1;
+        return ((leftHandValue as! Bool) != (rightHandValue as! Bool)) == true;
+      default:
+        return nil;
     }
   }
 
   func unaryEvaluation(operation: UnaryType) -> Any? {
-    let rightHandValue = self.evaluate(operation: operation.right);
-    switch operation.operator {
+    let rightHandValue = self.evaluate(operation: operation.right as! TreeExprType);
+    switch operation.action {
       case TokenEnum.NOT.final:
-        return !rightHandValue;
+        return rightHandValue == nil;
       case TokenEnum.MINUS.final:
-        return -rightHandValue;
+        return -(rightHandValue as! Double);
       default:
         return nil
     }
