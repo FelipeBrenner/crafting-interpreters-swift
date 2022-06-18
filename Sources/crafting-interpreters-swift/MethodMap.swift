@@ -35,6 +35,7 @@ func avgMethod(value: [Double]) -> Double {
     let length = value.count
     return sum / Double(length)
 }
+
 func sumMethod(value: [Double]) -> Double {
     return value.reduce(0,+)
 }

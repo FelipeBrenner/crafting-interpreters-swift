@@ -36,6 +36,8 @@ class EvaluateTree {
         return self.binaryEvaluation(operation: operation as! BinaryType);
       case operation is GroupingType:
         return self.groupingEvaluation(operation: operation as! GroupingType);
+      case operation is TernaryConditionalType:
+        return self.ternaryConditionalEvaluation(operation: operation as! TernaryConditionalType);
       default:
         return nil;
     }
@@ -103,5 +105,13 @@ class EvaluateTree {
       default:
         return nil
     }
+  }
+
+  func ternaryConditionalEvaluation(operation: TernaryConditionalType) -> Any? {
+    let conditionHandValue = self.evaluate(operation: operation.condition as! TreeExprType) as! Bool;
+    let exprIfTrueHandValue = self.evaluate(operation: operation.exprIfTrue as! TreeExprType);
+    let exprIfFalseHandValue = self.evaluate(operation: operation.exprIfFalse as! TreeExprType);
+
+    return conditionHandValue ? exprIfTrueHandValue : exprIfFalseHandValue;
   }
 }
