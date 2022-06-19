@@ -7,3 +7,7 @@ Projeto desenvolvido para cadeira de Paradigmas de Programação, da graduação
 ```bash
 swift run
 ```
+
+## 📹 Apresentação
+
+[![Watch the video](https://img.youtube.com/vi/bZRvlXbTDRw/maxresdefault.jpg)](https://www.youtube.com/watch?v=bZRvlXbTDRw)
