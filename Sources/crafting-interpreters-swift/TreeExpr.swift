@@ -94,7 +94,7 @@ class TreesExpr {
       if (self is MethodType) {
         return visitor.visitMethodTreeExpr(expr: self as! MethodType);
       }
-       if (self is TernaryConditional) {
+      if (self is TernaryConditional) {
         return visitor.visitTernaryConditionalTreeExpr(expr: self as! TernaryConditional);
       }
       

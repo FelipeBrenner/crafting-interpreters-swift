@@ -1,4 +1,5 @@
 import Foundation
+
 class CrawlCode {
   var tokens: [[TokenType]];
   var currentCharIndex: Int;
