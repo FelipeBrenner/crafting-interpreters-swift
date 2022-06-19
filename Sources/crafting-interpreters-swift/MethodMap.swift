@@ -12,7 +12,7 @@ func methodMapping(method: String, params: Any) -> Any? {
         case TokenEnum.SUM.value:
             return sumMethod(value: params as! [Double])
         default:
-            print("no way hozay")
+            return nil;
     }
 
     return nil
